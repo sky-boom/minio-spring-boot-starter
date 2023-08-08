@@ -2,7 +2,7 @@ package com.wzr.minio.config;
 
 /**
  * @author wzr
- * @date 2023-08-07 20:36
+ * @date 2023-04-07 20:36
  */
 public class GlobalException extends RuntimeException{
     
