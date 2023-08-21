@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * 分片上传的结果对象
  * @author wzr
- * @date 2023-08-07 20:05
+ * @date 2023-04-07 20:05
  */
 @Data
 public class FragResult {

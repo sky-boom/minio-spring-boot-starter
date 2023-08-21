@@ -102,10 +102,11 @@ public class MinioUtils {
     public FragResult uploadFileFragment(MultipartFile file,
                                   Integer currIndex, Integer totalPieces, String md5) throws Exception {
         checkNull(currIndex, totalPieces, md5);
-        // 临时文件存放桶
+        // 把当前分片上传至临时桶
         if ( !this.bucketExists(DEFAULT_TEMP_BUCKET_NAME) ) {
             this.createBucket(DEFAULT_TEMP_BUCKET_NAME);
         }
+        this.uploadFileStream(DEFAULT_TEMP_BUCKET_NAME, this.getFileTempPath(md5, currIndex, totalPieces), file.getInputStream());
         // 得到已上传的文件索引
         Iterable<Result<Item>> results = this.getFilesByPrefix(DEFAULT_TEMP_BUCKET_NAME, md5.concat("/"), false);
         Set<Integer> savedIndex = Sets.newHashSet();
@@ -127,7 +128,6 @@ public class MinioUtils {
         if (fileExists) {
             return new FragResult(false, remainIndex, "index [" + currIndex + "] exists");
         }
-        this.uploadFileStream(DEFAULT_TEMP_BUCKET_NAME, this.getFileTempPath(md5, currIndex, totalPieces), file.getInputStream());
         // 还剩一个索引未上传，当前上传索引刚好是未上传索引，上传完当前索引后就完全结束了。
         if ( remainIndex.size() == 1 && remainIndex.contains(currIndex) ) {
             return new FragResult(true, null, "completed");
